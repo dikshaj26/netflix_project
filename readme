@@ -107,7 +107,7 @@ CREATE TABLE netflix (
    CREATE DATABASE netflix_db;
    ```
 3. Import the SQL file:
-(https://github.com/dikshaj26/sql_netflix_query/blob/main/netflix_query_sql.sql)
+[click here](https://github.com/dikshaj26/sql_netflix_query/blob/main/netflix_query_sql.sql)
 
 4. Run
 
