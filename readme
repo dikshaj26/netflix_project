@@ -1,0 +1,119 @@
+
+🍿 Netflix Data Analysis (PostgreSQL)
+
+📌 Project Overview
+
+This project analyzes Netflix's dataset using **SQL in PostgreSQL**.
+The aim is to explore and extract insights like content distribution, trends, and patterns across movies and TV shows using advanced SQL queries.
+---
+
+## ⚙️ Tech Stack
+
+* **Database:** PostgreSQL
+* **Language:** SQL
+* **Tool:** pgAdmin 4 / psql CLI
+
+---
+
+## 🗂️ Dataset Information
+
+**Table Name:** `netflix`
+**Columns:**
+* `show_id` – Unique ID for each content
+* `type` – Movie or TV Show
+* `title` – Name of the content
+* `director` – Director of the content
+* `casts` – Cast list
+* `country` – Country of origin
+* `date_added` – Date when added to Netflix
+* `release_year` – Release year
+* `rating` – Content rating
+* `duration` – Duration (Movies in minutes, TV shows in seasons)
+* `listed_in` – Genre(s)
+* `description` – Content description
+
+---
+
+## ✅ Database Setup
+
+```sql
+CREATE TABLE netflix (
+    show_id VARCHAR(5),
+    type VARCHAR(10),
+    title VARCHAR(250),
+    director VARCHAR(550),
+    casts VARCHAR(1050),
+    country VARCHAR(550),
+    date_added VARCHAR(55),
+    release_year INT,
+    rating VARCHAR(15),
+    duration VARCHAR(15),
+    listed_in VARCHAR(250),
+    description VARCHAR(550)
+);
+```
+
+---
+
+## 🔍 Analysis Queries
+
+### 1. Count the Number of Movies vs TV Shows
+
+### 2. Find the Most Common Rating for Movies and TV Shows
+
+### 3. List All Movies Released in a Specific Year (e.g., 2020)
+
+### 4. Find the Top 5 Countries with the Most Content on Netflix
+
+### 5. Identify the Longest Movie
+
+### 6. Find Content Added in the Last 5 Years
+
+### 7. Find All Movies/TV Shows by Director 'Rajiv Chilaka'
+
+### 8. List All TV Shows with More Than 5 Seasons
+
+### 9. Count the Number of Content Items in Each Genre
+
+### 10. Find each year and the average number of content releases in India on Netflix (Top 5 Years)
+
+### 11. List All Movies that are Documentaries
+
+### 12. Find All Content Without a Director
+
+### 13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years
+
+### 14. Find the Top 10 Actors Who Have Appeared in the Highest Number of Movies Produced in India
+
+### 15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords
+
+
+
+## 📈 Insights
+
+* Content is dominated by **Movies** over TV Shows.
+* **Top countries** like the US and India contribute the highest content volume.
+* **Documentaries** and **Drama** are among the most popular genres.
+* Certain keywords like *Kill* and *Violence* can classify content sentiment.
+
+---
+
+## 🚀 How to Run
+
+1. Install **PostgreSQL** and **pgAdmin**.
+2. Create the database:
+
+   ```sql
+   CREATE DATABASE netflix_db;
+   ```
+3. Import the SQL file:
+
+4. Run
+
+---
+
+## 📌 Features
+
+✔ SQL queries for **EDA** and **business insights**
+✔ Advanced use of **CTEs**, **Window Functions**, and **String Functions**
+✔ Ready for integration with **Power BI / Tableau** for visualization
