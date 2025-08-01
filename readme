@@ -1,229 +1,90 @@
-
-# 🍿 Netflix Data Analysis (PostgreSQL)
+# 🎬 Netflix Data Analysis Project (SQL + Power BI)
 
 ## 📌 Project Overview
-This project analyzes Netflix's dataset using **SQL in PostgreSQL**.  
-The goal is to explore and extract insights like content distribution, trends, and patterns across Movies and TV Shows using advanced SQL queries.
+This project analyzes Netflix's content library using **SQL** and visualizes insights with **Power BI**.  
+The goal is to explore **Movies vs TV Shows distribution**, **Ratings**, **Countries**, **Genres**, and **Content Trends** over time.  
 
 ---
 
-## ⚙️ Tech Stack
-- **Database:** PostgreSQL  
-- **Language:** SQL  
-- **Tool:** pgAdmin 4 / psql CLI  
+## ✅ Dataset Details
+- **Source**: Netflix Titles Dataset
+- **Columns**:
+  - show_id
+  - type (Movie / TV Show)
+  - title
+  - director
+  - cast
+  - country
+  - date_added
+  - release_year
+  - rating
+  - duration
+  - listed_in (Genres)
+  - description
+- **Total Records**: ~8,800
 
 ---
 
-## 🗂️ Dataset Information
-**Table Name:** `netflix`  
-**Columns:**
-- `show_id` – Unique ID for each content
-- `type` – Movie or TV Show
-- `title` – Name of the content
-- `director` – Director name(s)
-- `casts` – Cast list
-- `country` – Country of origin
-- `date_added` – Date added to Netflix
-- `release_year` – Year of release
-- `rating` – Content rating
-- `duration` – Duration (Movies in minutes, TV Shows in seasons)
-- `listed_in` – Genre(s)
-- `description` – Content description
+## 🎯 Business Problems & SQL Queries
+### **SQL Analysis Questions**
+1. Count the Number of Movies vs TV Shows  
+2. Find the Most Common Rating for Movies and TV Shows  
+3. List All Movies Released in a Specific Year (e.g., 2020)  
+4. Find the Top 5 Countries with the Most Content  
+5. Identify the Longest Movie  
+6. Find Content Added in the Last 5 Years  
+7. Find All Movies/TV Shows by Director 'Rajiv Chilaka'  
+8. List All TV Shows with More Than 5 Seasons  
+9. Count the Number of Content Items in Each Genre  
+10. Find each year and the average number of content releases in India on Netflix  
+11. List All Movies that are Documentaries  
+12. Find All Content Without a Director  
+13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years  
+14. Find the Top 10 Actors Who Have Appeared in the Highest Number of Movies Produced in India  
+15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords  
 
 ---
 
-## ✅ Database Setup
-```sql
-CREATE TABLE netflix (
-    show_id VARCHAR(5),
-    type VARCHAR(10),
-    title VARCHAR(250),
-    director VARCHAR(550),
-    casts VARCHAR(1050),
-    country VARCHAR(550),
-    date_added VARCHAR(55),
-    release_year INT,
-    rating VARCHAR(15),
-    duration VARCHAR(15),
-    listed_in VARCHAR(250),
-    description VARCHAR(550)
-);
-````
+
+## ✅ Power Bi Dashboard Features
+- **KPIs**:
+  - Total Titles
+  - Total Movies
+  - Total TV Shows
+- **Charts**:
+  - Movies vs TV Shows (Pie Chart)
+  - Top 10 Countries by Titles (Bar Chart)
+  - Year-wise Trend (Line Chart)
+  - Ratings Distribution (Bar Chart)
+- **Filters**:
+  - Country
+  - Release Year
+  - Rating
 
 ---
 
-## 🔍 Analysis Queries
+## 🛠 Steps to Build
+### **SQL Analysis**
+- Load dataset into database
+- Run queries 
 
-### 1. Count the Number of Movies vs TV Shows
-
-```sql
-SELECT type, COUNT(*)
-FROM netflix
-GROUP BY type;
-```
-
-### 2. Find the Most Common Rating for Movies and TV Shows
-
-```sql
-SELECT type, rating FROM (
-  SELECT type, rating, COUNT(*),
-         RANK() OVER(PARTITION BY type ORDER BY COUNT(*) DESC) AS ranking
-  FROM netflix
-  GROUP BY type, rating
-) t
-WHERE ranking = 1;
-```
-
-### 3. List All Movies Released in 2020
-
-```sql
-SELECT *
-FROM netflix
-WHERE type = 'Movie'
-  AND release_year = 2020;
-```
-
-### 4. Top 5 Countries with the Most Content
-
-```sql
-SELECT *
-FROM (
-    SELECT UNNEST(STRING_TO_ARRAY(country, ',')) AS country,
-           COUNT(*) AS total_content
-    FROM netflix
-    GROUP BY 1
-) t
-WHERE country IS NOT NULL
-ORDER BY total_content DESC
-LIMIT 5;
-```
-
-### 5. Identify the Longest Movie
-
-```sql
-SELECT *
-FROM netflix
-WHERE type = 'Movie'
-ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC
-LIMIT 1;
-```
-
-### 6. Find Content Added in the Last 5 Years
-
-```sql
-SELECT *
-FROM netflix
-WHERE TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
-```
-
-### 7. All Movies/TV Shows by Director 'Rajiv Chilaka'
-
-```sql
-SELECT *
-FROM netflix
-WHERE director ILIKE '%Rajiv Chilaka%';
-```
-
-### 8. TV Shows with More Than 5 Seasons
-
-```sql
-SELECT *
-FROM netflix
-WHERE type = 'TV Show'
-  AND SPLIT_PART(duration, ' ', 1)::INT > 5;
-```
-
-### 9. Count Content in Each Genre
-
-```sql
-SELECT UNNEST(STRING_TO_ARRAY(listed_in, ',')) AS genre,
-       COUNT(*) AS total_content
-FROM netflix
-GROUP BY genre;
-```
-
-### 10. Top 5 Years with Highest Content Release in India
-
-```sql
-SELECT country, release_year, COUNT(show_id) AS total_release,
-       ROUND(COUNT(show_id)::NUMERIC /
-       (SELECT COUNT(show_id) FROM netflix WHERE country = 'India')::NUMERIC * 100, 2) AS avg_release
-FROM netflix
-WHERE country = 'India'
-GROUP BY country, release_year
-ORDER BY avg_release DESC
-LIMIT 5;
-```
-
-### 11. All Movies that are Documentaries
-
-```sql
-SELECT *
-FROM netflix
-WHERE listed_in ILIKE '%Documentaries%';
-```
-
-### 12. Content Without a Director
-
-```sql
-SELECT *
-FROM netflix
-WHERE director IS NULL;
-```
-
-### 13. Movies with Actor 'Salman Khan' in Last 10 Years
-
-```sql
-SELECT *
-FROM netflix
-WHERE casts ILIKE '%Salman Khan%'
-  AND release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10;
-```
-
-### 14. Top 10 Actors in Movies Produced in India
-
-```sql
-SELECT UNNEST(STRING_TO_ARRAY(casts, ',')) AS actor,
-       COUNT(*) AS total_content
-FROM netflix
-WHERE country = 'India'
-GROUP BY actor
-ORDER BY total_content DESC
-LIMIT 10;
-```
-
-### 15. Categorize Content Based on 'Kill' and 'Violence'
-
-```sql
-SELECT category, COUNT(*) AS content_count
-FROM (
-    SELECT CASE WHEN description ILIKE '%kill%' OR description ILIKE '%violence%'
-                THEN 'Bad'
-                ELSE 'Good' END AS category
-    FROM netflix
-) t
-GROUP BY category;
-```
+### **Power BI Dashboard**
+1. Load then clean dataset in Power BI.
+2. Create measures:
+   ```DAX
+   Total Titles = COUNTROWS(Netflix)
+   Total Movies = CALCULATE(COUNTROWS(Netflix), Netflix[type]="Movie")
+   Total TV Shows = CALCULATE(COUNTROWS(Netflix), Netflix[type]="TV Show")
 
 ---
 
-## 📈 Insights
+✅ Conclusion
+1.Netflix hosts a large catalog of 8,800+ titles, with Movies accounting for ~70% and TV Shows for ~30%.
 
-* Movies dominate Netflix content compared to TV Shows.
-* USA and India are among the top content-producing countries.
-* Documentaries and Dramas are popular genres.
-* Actor-specific and keyword-based insights reveal patterns.
+2.TV-MA is the most frequent rating, highlighting the platform's focus on mature content.
 
+3.The United States, India, and UK dominate content production, reflecting key markets.
 
-## 🚀 How to Run
+4.Content growth surged after 2015, aligning with global streaming trends.
 
-1. Install **PostgreSQL** & **pgAdmin**.
-2. Create a database:
-
-   ```sql
-   CREATE DATABASE netflix_db;
-   ```
-3. Import the `.sql` file:
-
-4. Run
-
+5.The analysis, combining SQL queries and a Power BI dashboard, provides actionable insights into content distribution, genres, and audience focus.
